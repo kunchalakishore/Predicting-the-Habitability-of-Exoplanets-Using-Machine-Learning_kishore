@@ -1,200 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Exoplanet Habitability Predictor</title>
+<meta charset="UTF-8">
+<title>Exoplanet Habitability Predictor</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
-            color: white;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+/* ---------- RESET ---------- */
+body {
+    margin:0;
+    font-family:"Segoe UI", sans-serif;
+    background:#000;
+    color:#fff;
+    overflow-x:hidden;
+}
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 30px;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-        }
+/* ---------- BASE ---------- */
+html, body {
+    height: 100%;
+    font-family: "Segoe UI", Arial, sans-serif;
+    overflow-x: hidden;
+    color: white;
+}
 
-        p {
-            text-align: center;
-            opacity: 0.9;
-        }
+/* ---------- STAR BACKGROUND ---------- */
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
 
-        .card {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-        }
+/* ---------- NAVIGATION ---------- */
+nav {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 12px 22px;
+    border-radius: 30px;
+    backdrop-filter: blur(6px);
+}
 
-        label {
-            display: block;
-            margin-top: 12px;
-        }
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 600;
+    font-size: 15px;
+    opacity: 0.95;
+}
 
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 4px;
-            border-radius: 6px;
-            border: none;
-        }
+nav a:hover {
+    opacity: 1;
+    color: #00c6ff;
+}
 
-        button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 20px;
-            border: none;
-            border-radius: 8px;
-            background: #00c6ff;
-            color: black;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+/* ---------- HERO SECTION ---------- */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
 
-        button:hover {
-            background: #00a3d6;
-        }
+.hero-box {
+    background: rgba(0, 0, 0, 0.55);
+    padding: 55px;
+    border-radius: 18px;
+    max-width: 780px;
+    backdrop-filter: blur(6px);
+}
 
-        #result {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 18px;
-        }
+.hero-box h1 {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
+.hero-box h2 {
+    font-weight: normal;
+    opacity: 0.9;
+    margin-bottom: 30px;
+}
 
-        th, td {
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 8px;
-            text-align: center;
-        }
+.hero-box p {
+    font-size: 18px;
+    line-height: 1.7;
+    opacity: 0.92;
+}
 
-        th {
-            background: rgba(0,0,0,0.3);
-        }
-    </style>
+/* ---------- BUTTON ---------- */
+.hero-box button {
+    margin-top: 35px;
+    padding: 14px 40px;
+    font-size: 18px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    color: black;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.hero-box button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0,198,255,0.6);
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <h1>🌍 Exoplanet Habitability Predictor</h1>
-    <p>Enter planet & star values to predict habitability</p>
+<!-- STAR CANVAS -->
+<canvas id="stars"></canvas>
 
+<!-- NAV BAR -->
+<nav>
     
-    <div class="card">
-        <h2>🔮 Predict Habitability</h2>
-
-        <label>Planet Radius (Earth radii)</label>
-        <input id="pl_rade" type="number" step="0.01" value="1.0">
-
-        <label>Planet Mass (Earth masses)</label>
-        <input id="pl_bmasse" type="number" step="0.01" value="1.0">
-
-        <label>Equilibrium Temperature (K)</label>
-        <input id="pl_eqt" type="number" step="1" value="288">
-
-        <label>Orbital Period (days)</label>
-        <input id="pl_orbper" type="number" step="1" value="365">
-
-        <label>Star Temperature (K)</label>
-        <input id="st_teff" type="number" step="10" value="5778">
-
-        <label>Star Radius (Solar radii)</label>
-        <input id="st_rad" type="number" step="0.01" value="1.0">
-
-        <button onclick="predict()">Predict</button>
-
-        <div id="result"></div>
-    </div>
-
     
-    <div class="card">
-        <h2>🏆 Top 10 Ranked Planets</h2>
-        <button onclick="loadRanks()">Load Rankings</button>
-        <div id="rankings"></div>
+    <a href="dashboard.html">Dashboard</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-box">
+        <h1>🌍 Welcome to Exoplanet Explorer</h1>
+        <h2>Discover worlds beyond Earth that could support life</h2>
+
+        <p>
+            This platform uses <b>machine learning</b> and real
+            <b>astronomical datasets</b> to predict the habitability of
+            exoplanets based on planetary and stellar characteristics.
+        </p>
+
+        <p style="margin-top: 15px;">
+            Analyze habitability scores, explore top-ranked planets,
+            visualize feature importance, and export scientific reports —
+            all in one intelligent dashboard.
+        </p>
+
+        <button onclick="goToPredict()">🔮 Predict Habitability</button>
     </div>
-</div>
+</section>
 
 <script>
-const api = "http://127.0.0.1:5000";
+/* ---------- REDIRECT ---------- */
+function goToPredict() {
+    window.location.href = "predict.html";
+}
 
-async function predict() {
+/* ---------- STAR ANIMATION ---------- */
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
 
-    // Always read values fresh
-    const data = {
-        pl_rade: parseFloat(document.getElementById("pl_rade").value),
-        pl_bmasse: parseFloat(document.getElementById("pl_bmasse").value),
-        pl_eqt: parseFloat(document.getElementById("pl_eqt").value),
-        pl_orbper: parseFloat(document.getElementById("pl_orbper").value),
-        st_teff: parseFloat(document.getElementById("st_teff").value),
-        st_rad: parseFloat(document.getElementById("st_rad").value)
-    };
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
-    // Validation
-    for (let k in data) {
-        if (isNaN(data[k])) {
-            alert("Please enter valid numbers in all fields");
-            return;
+const STAR_COUNT = 280;
+const stars = [];
+
+for (let i = 0; i < STAR_COUNT; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.3,
+        s: Math.random() * 0.4 + 0.1
+    });
+}
+
+function animateStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "white";
+
+    stars.forEach(star => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        star.y += star.s;
+        if (star.y > canvas.height) {
+            star.y = 0;
+            star.x = Math.random() * canvas.width;
         }
-    }
-
-    const res = await fetch(api + "/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
     });
 
-    const r = await res.json();
-    console.log("API RESPONSE:", r);
-
-    // CORRECT FIELD NAME
-    const percent = (r.habitability_probability * 100).toFixed(2);
-
-    document.getElementById("result").innerHTML = `
-        <h3>${r.habitability === 1 ? "🌍 Habitable" : "Not Habitable"}</h3>
-        <p>Probability: <b>${percent}%</b></p>
-    `;
+    requestAnimationFrame(animateStars);
 }
-
-
-async function loadRanks() {
-    const res = await fetch(api + "/rank");
-    const data = await res.json();
-
-    let html = `<table>
-        <tr>
-            <th>Rank</th>
-            <th>Planet</th>
-            <th>Score</th>
-        </tr>`;
-
-    data.forEach(p => {
-        html += `
-        <tr>
-            <td>${p.rank}</td>
-            <td>${p.planet_name}</td>
-            <td>${p.habitability_score.toFixed(4)}</td>
-        </tr>`;
-    });
-
-    html += "</table>";
-    document.getElementById("rankings").innerHTML = html;
-}
+animateStars();
 </script>
 
 </body>
