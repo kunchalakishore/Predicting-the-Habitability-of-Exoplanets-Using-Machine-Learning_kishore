@@ -59,12 +59,12 @@ with app.app_context():
 
 # Health check
 
-@app.route("/", methods=["GET"])
-def health():
-    return jsonify({
-        "status": "success",
-        "message": "Exoplanet Habitability API running"
-    })
+from flask import send_from_directory
+
+@app.route("/")
+def home():
+    return send_from_directory("static", "index.html")
+
 
 
 # Add Exoplanet
