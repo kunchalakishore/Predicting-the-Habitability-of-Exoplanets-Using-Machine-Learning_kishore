@@ -1,9 +1,12 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import numpy as np
 import joblib
 import os
+from io import BytesIO
+import pandas as pd
+
 
 
 # App setup
@@ -59,11 +62,20 @@ with app.app_context():
 
 # Health check
 
-from flask import send_from_directory
+
 
 @app.route("/")
 def home():
-    return send_from_directory("static", "index.html")
+    return render_template("index.html")
+
+@app.route("/predict")
+def predict_page():
+    return render_template("predict.html")
+
+@app.route("/dashboard-page")
+def dashboard_page():
+    return render_template("dashboard.html")
+
 
 
 
